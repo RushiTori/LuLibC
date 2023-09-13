@@ -16,6 +16,7 @@ bool str_Contains(const string src, char c);
 bool str_ContainsString(const string src, const string seq);
 uint str_IndexOf(const string src, char c);
 uint str_LastIndexOf(const string src, char c);
+uint str_CountChar(const string src, char c);
 
 ulong str_StrToUInt(const string str, uchar base, ulong maxValue);
 

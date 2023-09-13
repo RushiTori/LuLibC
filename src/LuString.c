@@ -123,6 +123,19 @@ uint str_LastIndexOf(const string src, char c) {
 	return -1;
 }
 
+uint str_CountChar(const string src, char c) {
+	if (!str_Contains(src, c)) return -1;
+	uint srcLen = strlen(src);
+
+	uint count = 0;
+
+	for (int i = srcLen; i >= 0; i--) {
+		if (src[i] == c) count++;
+	}
+
+	return count;
+}
+
 ulong str_StrToUInt(const string str, uchar base, ulong maxValue) {
 	if (!str) return 0;
 	uint len = strlen(str);
@@ -169,7 +182,7 @@ string* str_SplitTokens(const string src, const string tokens) {
 	uint tokensLen = strlen(tokens);
 
 	if (!srcLen || !tokensLen) return NULL;
-	
+
 	int splitCount = 1;
 	string* subStrings = calloc(1, sizeof(string));
 
