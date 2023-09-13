@@ -169,34 +169,29 @@ string* str_SplitTokens(const string src, const string tokens) {
 	uint tokensLen = strlen(tokens);
 
 	if (!srcLen || !tokensLen) return NULL;
-
-	int lastSubLen = 1;
+	
 	int splitCount = 1;
 	string* subStrings = calloc(1, sizeof(string));
-	subStrings[splitCount - 1] = calloc(1, sizeof(char));
 
 	for (uint i = 0; i < srcLen; i++) {
-		if (str_Contains(tokens, src[i])) {
-			if (lastSubLen == 1) continue;
-			lastSubLen = 1;
-			splitCount++;
-			subStrings = realloc(subStrings, sizeof(string) * splitCount);
-			subStrings[splitCount - 1] = calloc(1, sizeof(char));
-		} else {
-			subStrings[splitCount - 1][lastSubLen - 1] = src[i];
-			lastSubLen++;
-			subStrings[splitCount - 1] = realloc(subStrings[splitCount - 1], lastSubLen);
-			subStrings[splitCount - 1][lastSubLen - 1] = '\0';
-		}
-	}
+		if (str_Contains(tokens, src[i])) continue;
 
-	if (lastSubLen == 1) {
-		free(subStrings[splitCount - 1]);
-		subStrings[splitCount - 1] = NULL;
-	} else {
+		uint j = i;
+		while (j < srcLen) {
+			if (str_Contains(tokens, src[j])) break;
+			j++;
+		}
+
+		uint subLen = j - i;
+		string sub = calloc(subLen + 1, sizeof(char));
+		memcpy(sub, src + i, subLen);
+		subStrings[splitCount - 1] = sub;
+
 		splitCount++;
-		subStrings = realloc(subStrings, sizeof(string) * splitCount);
+		subStrings = realloc(subStrings, splitCount * sizeof(string));
 		subStrings[splitCount - 1] = NULL;
+
+		i = j - 1;
 	}
 
 	return subStrings;
