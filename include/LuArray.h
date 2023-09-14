@@ -16,6 +16,12 @@ typedef struct Array {
 	bool containsPointers;
 } Array;
 
+#define EmptyArray                                                                            \
+	(Array) {                                                                                 \
+		.data = NULL, .end = NULL, .dataSize = 0, .elementCount = 0, .containsArrays = false, \
+		.containsPointers = false                                                             \
+	}
+
 Array arr_Create(int dataSize, int initialCapacity, bool isDataArrays, bool isDataPointers);
 void arr_Clear(Array* arr, bool clear_recursive);
 

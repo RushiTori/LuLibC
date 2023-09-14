@@ -7,6 +7,7 @@
 #include <LuLib/LuFile.h>
 #include <LuLib/LuHashMap.h>
 #include <LuLib/LuLinkedList.h>
+#include <LuLib/LuLogs.h>
 #include <LuLib/LuString.h>
 #include <LuLib/LuTypes.h>
 #include <LuLib/LuUtils.h>

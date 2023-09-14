@@ -1,24 +1,6 @@
-#include <LuLinkedList.h>
+#include "LuLinkedList.h"
 
-enum LL_ErrorCodes {
-	LL_LLIsNullptr = 0,
-	LL_OutOfBounds,
-	LL_EmptyDataSize,
-	LL_NoDataPassed,
-	LL_AllocFail,
-	LL_ErrorCount
-};
-
-static const string LL_ErrorMessages[LL_ErrorCount] = {
-	"Linked List Passed Is Nullptr",
-	"Linked List Out Of Bounds Exception",
-	"Size Of Element Is 0 (Zero)",
-	"Trying To Push/Insert/Remove Nullptr/Empty Memory",
-	"Linked List Allocation (malloc/calloc) Failed",
-};
-
-#define PRINT_LL_ERROR(ll_err) \
-	fprintf(stderr, "Linked List Error %d: %s\nAt : %s:%d\n", ll_err, LL_ErrorMessages[ll_err], __FILE__, __LINE__)
+#include "LuLogs.h"
 
 LinkedList ll_Create(uint dataSize, bool isDataPointers) {
 	LinkedList temp;
@@ -32,11 +14,11 @@ LinkedList ll_Create(uint dataSize, bool isDataPointers) {
 
 void ll_Clear(LinkedList* list, bool clear_recursive) {
 	if (!list) {
-		PRINT_LL_ERROR(LL_LLIsNullptr);
+		LOG_CONTAINER_ERROR(NullContainer);
 		return;
 	}
 	if (!list->dataSize) {
-		PRINT_LL_ERROR(LL_EmptyDataSize);
+		LOG_CONTAINER_ERROR(NoDataSize);
 		return;
 	}
 	if ((!list->begin && !list->end) || !list->elementCount) {
@@ -65,17 +47,17 @@ void ll_Clear(LinkedList* list, bool clear_recursive) {
 
 LinkedNode* ll_Get(LinkedList* list, uint index) {
 	if (!list) {
-		PRINT_LL_ERROR(LL_LLIsNullptr);
+		LOG_CONTAINER_ERROR(NullContainer);
 		return NULL;
 	}
 
 	if (!list->dataSize) {
-		PRINT_LL_ERROR(LL_EmptyDataSize);
+		LOG_CONTAINER_ERROR(NoDataSize);
 		return NULL;
 	}
 
 	if (index >= list->elementCount) {
-		PRINT_LL_ERROR(LL_OutOfBounds);
+		LOG_CONTAINER_ERROR(OutOfBounds);
 		return NULL;
 	}
 
@@ -100,7 +82,7 @@ LinkedNode* ll_Get(LinkedList* list, uint index) {
 
 	// To be honest I don't know what happened but
 	// the user did something wrong with the number of elements
-	PRINT_LL_ERROR(LL_OutOfBounds);
+	LOG_CONTAINER_ERROR(OutOfBounds);
 	return NULL;
 }
 
@@ -110,12 +92,12 @@ void ll_Set(LinkedList* list, uint index, void* data_) {
 	if (!temp) return;
 
 	if (!data_) {
-		PRINT_LL_ERROR(LL_NoDataPassed);
+		LOG_CONTAINER_ERROR(NullDataPassed);
 		return;
 	}
 
 	if (!list->dataSize) {
-		PRINT_LL_ERROR(LL_EmptyDataSize);
+		LOG_CONTAINER_ERROR(NoDataSize);
 		return;
 	}
 
@@ -124,34 +106,34 @@ void ll_Set(LinkedList* list, uint index, void* data_) {
 
 void ll_Push(LinkedList* list, void* data_) {
 	if (!list) {
-		PRINT_LL_ERROR(LL_LLIsNullptr);
+		LOG_CONTAINER_ERROR(NullContainer);
 		return;
 	}
 
 	if (!list->dataSize) {
-		PRINT_LL_ERROR(LL_EmptyDataSize);
+		LOG_CONTAINER_ERROR(NoDataSize);
 		return;
 	}
 
 	if (!data_) {
-		PRINT_LL_ERROR(LL_NoDataPassed);
+		LOG_CONTAINER_ERROR(NullDataPassed);
 		return;
 	}
 
 	if (!list->dataSize) {
-		PRINT_LL_ERROR(LL_EmptyDataSize);
+		LOG_CONTAINER_ERROR(NoDataSize);
 		return;
 	}
 
 	LinkedNode* tempNode = calloc(1, sizeof(LinkedNode));
 	if (!tempNode) {
-		PRINT_LL_ERROR(LL_AllocFail);
+		LOG_CONTAINER_ERROR(MemAllocationFail);
 		return;
 	}
 
 	tempNode->data = malloc(list->dataSize);
 	if (!tempNode->data) {
-		PRINT_LL_ERROR(LL_AllocFail);
+		LOG_CONTAINER_ERROR(MemAllocationFail);
 		free(tempNode);
 		return;
 	}
@@ -176,7 +158,7 @@ void ll_Push(LinkedList* list, void* data_) {
 
 void ll_Insert(LinkedList* list, uint index, void* data_) {
 	if (!list) {
-		PRINT_LL_ERROR(LL_LLIsNullptr);
+		LOG_CONTAINER_ERROR(NullContainer);
 		return;
 	}
 
@@ -186,28 +168,28 @@ void ll_Insert(LinkedList* list, uint index, void* data_) {
 	}
 
 	if (!list->dataSize) {
-		PRINT_LL_ERROR(LL_EmptyDataSize);
+		LOG_CONTAINER_ERROR(NoDataSize);
 		return;
 	}
 
 	if (!data_ || !list->dataSize) {
-		PRINT_LL_ERROR(LL_NoDataPassed);
+		LOG_CONTAINER_ERROR(NullDataPassed);
 		return;
 	}
 
 	if (index > list->elementCount) {
-		PRINT_LL_ERROR(LL_OutOfBounds);
+		LOG_CONTAINER_ERROR(OutOfBounds);
 	}
 
 	LinkedNode* tempNode = calloc(1, sizeof(LinkedNode));
 	if (!tempNode) {
-		PRINT_LL_ERROR(LL_AllocFail);
+		LOG_CONTAINER_ERROR(MemAllocationFail);
 		return;
 	}
 
 	tempNode->data = malloc(list->dataSize);
 	if (!tempNode->data) {
-		PRINT_LL_ERROR(LL_AllocFail);
+		LOG_CONTAINER_ERROR(MemAllocationFail);
 		free(tempNode);
 		return;
 	}
@@ -231,17 +213,17 @@ void ll_Insert(LinkedList* list, uint index, void* data_) {
 
 void ll_Remove(LinkedList* list, uint index, bool clear_recursive) {
 	if (!list) {
-		PRINT_LL_ERROR(LL_LLIsNullptr);
+		LOG_CONTAINER_ERROR(NullContainer);
 		return;
 	}
 
 	if (!list->dataSize) {
-		PRINT_LL_ERROR(LL_EmptyDataSize);
+		LOG_CONTAINER_ERROR(NoDataSize);
 		return;
 	}
 
 	if (index >= list->elementCount) {
-		PRINT_LL_ERROR(LL_OutOfBounds);
+		LOG_CONTAINER_ERROR(OutOfBounds);
 		return;
 	}
 

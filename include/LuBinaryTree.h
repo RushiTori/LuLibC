@@ -11,12 +11,18 @@ typedef struct BinaryNode {
 	void* data;
 } BinaryNode;
 
+#define EmptyBinaryNode \
+	(BinaryNode) { .left = NULL, .right = NULL, .key = 0, .data = NULL }
+
 typedef struct BinaryTree {
 	BinaryNode* root;
 	uint dataSize;
 	uint elementCount;
 	bool containsPointers;
 } BinaryTree;
+
+#define EmptyBinaryTree \
+	(BinaryTree) { .root = NULL, .dataSize = 0, .elementCount = 0, .containsPointers = false }
 
 BinaryTree bt_Create(uint dataSize, bool isDataPointers);
 void bt_Clear(BinaryTree* tree, bool clear_recursive);

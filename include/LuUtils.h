@@ -27,7 +27,6 @@ double getDeltaTime(const Timer* start, const Timer* end);	// MicroSeconds
 double getDeltaTimeMillis(const Timer* start, const Timer* end);
 double getDeltaTimeSeconds(const Timer* start, const Timer* end);
 
-
 double asbVal(double val);
 
 #endif	// LU_UTILS_H

@@ -1,25 +1,6 @@
-#include <LuBinaryTree.h>
+#include "LuBinaryTree.h"
 
-enum BT_ErrorCodes {
-	BT_IsNullptr = 0,
-	BT_KeyNotFound,
-	BT_KeyAlreadyExists,
-	BT_EmptyDataSize,
-	BT_NoDataPassed,
-	BT_AllocFail,
-	BT_ErrorCount
-};
-
-static const string BT_ErrorMessages[BT_ErrorCount] = {
-	"Binary Tree Passed Is Nullptr",
-	"Key Not Found",
-	"Key Already Exists",
-	"Size Of Element Is 0 (Zero)",
-	"Trying To Push/Insert/Remove Nullptr/Empty Memory",
-	"Binary Tree Allocation (malloc/calloc) Failed",
-};
-
-#define PRINT_BT_ERROR(bt_err) fprintf(stderr, "Binary Tree Error %d: %s\n", bt_err, BT_ErrorMessages[bt_err])
+#include "LuLogs.h"
 
 BinaryNode* RecursivePush(BinaryNode* node, int key, void* data_, uint data_len);
 
@@ -89,22 +70,20 @@ int NodeBalance(BinaryNode* node) {
 }
 
 BinaryTree bt_Create(uint dataSize, bool isDataPointers) {
-	BinaryTree temp;
-	temp.root = NULL;
+	BinaryTree temp = EmptyBinaryTree;
 	temp.dataSize = dataSize;
 	temp.containsPointers = isDataPointers;
-	temp.elementCount = 0;
 	return temp;
 }
 
 void bt_Clear(BinaryTree* tree, bool clear_recursive) {
 	if (!tree) {
-		PRINT_BT_ERROR(BT_IsNullptr);
+		LOG_CONTAINER_ERROR(NullContainer);
 		return;
 	}
 
 	if (!tree->dataSize) {
-		PRINT_BT_ERROR(BT_EmptyDataSize);
+		LOG_CONTAINER_ERROR(NoDataSize);
 		return;
 	}
 
@@ -121,7 +100,7 @@ void bt_Clear(BinaryTree* tree, bool clear_recursive) {
 
 BinaryNode* bt_Get(BinaryTree* tree, int key) {
 	if (!bt_Contains(tree, key)) {
-		PRINT_BT_ERROR(BT_KeyNotFound);
+		LOG_CONTAINER_ERROR(KeyNotFound);
 		return NULL;
 	}
 
@@ -142,12 +121,12 @@ BinaryNode* bt_Get(BinaryTree* tree, int key) {
 
 void bt_Set(BinaryTree* tree, int key, void* data_) {
 	if (!data_) {
-		PRINT_BT_ERROR(BT_NoDataPassed);
+		LOG_CONTAINER_ERROR(NullDataPassed);
 		return;
 	}
 
 	if (!tree->dataSize) {
-		PRINT_BT_ERROR(BT_EmptyDataSize);
+		LOG_CONTAINER_ERROR(NoDataSize);
 		return;
 	}
 
@@ -159,17 +138,17 @@ void bt_Set(BinaryTree* tree, int key, void* data_) {
 
 void bt_Push(BinaryTree* tree, int key, void* data_) {
 	if (bt_Contains(tree, key)) {
-		PRINT_BT_ERROR(BT_KeyAlreadyExists);
+		LOG_CONTAINER_ERROR(KeyAlreadyExists);
 		return;
 	}
 
 	if (!data_) {
-		PRINT_BT_ERROR(BT_NoDataPassed);
+		LOG_CONTAINER_ERROR(NullDataPassed);
 		return;
 	}
 
 	if (!tree->dataSize) {
-		PRINT_BT_ERROR(BT_EmptyDataSize);
+		LOG_CONTAINER_ERROR(NoDataSize);
 		return;
 	}
 
@@ -179,7 +158,7 @@ void bt_Push(BinaryTree* tree, int key, void* data_) {
 
 void bt_Remove(BinaryTree* tree, int key, bool clear_recursive) {
 	if (!bt_Contains(tree, key)) {
-		PRINT_BT_ERROR(BT_KeyNotFound);
+		LOG_CONTAINER_ERROR(KeyNotFound);
 		return;
 	}
 	tree->root = RecursiveDeletion(tree->root, key, tree->containsPointers && clear_recursive);
@@ -188,12 +167,12 @@ void bt_Remove(BinaryTree* tree, int key, bool clear_recursive) {
 
 bool bt_Contains(BinaryTree* tree, int key) {
 	if (!tree) {
-		PRINT_BT_ERROR(BT_IsNullptr);
+		LOG_CONTAINER_ERROR(NullContainer);
 		return false;
 	}
 
 	if (!tree->dataSize) {
-		PRINT_BT_ERROR(BT_EmptyDataSize);
+		LOG_CONTAINER_ERROR(NoDataSize);
 		return false;
 	}
 
@@ -215,14 +194,14 @@ BinaryNode* RecursivePush(BinaryNode* node, int key, void* data_, uint data_len)
 	if (node == NULL) {
 		BinaryNode* temp = calloc(1, sizeof(BinaryNode));
 		if (!temp) {
-			PRINT_BT_ERROR(BT_AllocFail);
+			LOG_CONTAINER_ERROR(MemAllocationFail);
 			return NULL;
 		}
 		// temp->prev = parent;
 		temp->key = key;
 		temp->data = malloc(data_len);
 		if (!temp->data) {
-			PRINT_BT_ERROR(BT_AllocFail);
+			LOG_CONTAINER_ERROR(MemAllocationFail);
 			free(temp);
 			return NULL;
 		}

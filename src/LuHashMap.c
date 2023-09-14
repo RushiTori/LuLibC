@@ -1,26 +1,7 @@
-#include <LuHashMap.h>
-#include <LuLinkedList.h>
+#include "LuHashMap.h"
 
-enum HM_ErrorCodes {
-	HM_IsNullptr = 0,
-	HM_KeyNotFound,
-	HM_KeyAlreadyExists,
-	HM_EmptyDataSize,
-	HM_NoDataPassed,
-	HM_AllocFail,
-	HM_ErrorCount
-};
-
-static const string HM_ErrorMessages[HM_ErrorCount] = {
-	"HashMap Passed Is Nullptr",
-	"Key Not Found",
-	"Key Already Exists",
-	"Size Of Element Is 0 (Zero)",
-	"Trying To Push/Insert/Remove Nullptr/Empty Memory",
-	"HashMap Allocation (malloc/calloc) Failed",
-};
-
-#define PRINT_HM_ERROR(hm_err) fprintf(stderr, "HashMap Error %d: %s\n", hm_err, HM_ErrorMessages[hm_err])
+#include "LuLinkedList.h"
+#include "LuLogs.h"
 
 int hm_HashString(const string str) {
 	if (!str || !(*str)) return 0;
@@ -52,12 +33,12 @@ HashMap hm_Create(uint dataSize, bool isDataPointers) {
 
 void hm_Clear(HashMap* map, bool clear_recursive) {
 	if (!map) {
-		PRINT_HM_ERROR(HM_IsNullptr);
+		LOG_CONTAINER_ERROR(NullContainer);
 		return;
 	}
 
 	if (!map->dataSize) {
-		PRINT_HM_ERROR(HM_EmptyDataSize);
+		LOG_CONTAINER_ERROR(NoDataSize);
 	}
 
 	if (!map->data || !map->elementCount) return;
@@ -94,7 +75,7 @@ void hm_Clear(HashMap* map, bool clear_recursive) {
 
 void* hm_Get(HashMap* map, const string key) {
 	if (!hm_Contains(map, key)) {
-		PRINT_HM_ERROR(HM_KeyNotFound);
+		LOG_CONTAINER_ERROR(KeyNotFound);
 		return NULL;
 	}
 
@@ -121,12 +102,12 @@ void* hm_Get(HashMap* map, const string key) {
 
 void hm_Set(HashMap* map, const string key, void* data_) {
 	if (!data_) {
-		PRINT_HM_ERROR(HM_NoDataPassed);
+		LOG_CONTAINER_ERROR(NullDataPassed);
 		return;
 	}
 
 	if (!map->dataSize) {
-		PRINT_HM_ERROR(HM_EmptyDataSize);
+		LOG_CONTAINER_ERROR(NoDataSize);
 		return;
 	}
 
@@ -137,17 +118,17 @@ void hm_Set(HashMap* map, const string key, void* data_) {
 
 void hm_Push(HashMap* map, const string key, void* data_) {
 	if (!data_) {
-		PRINT_HM_ERROR(HM_NoDataPassed);
+		LOG_CONTAINER_ERROR(NullDataPassed);
 		return;
 	}
 
 	if (!map->dataSize) {
-		PRINT_HM_ERROR(HM_EmptyDataSize);
+		LOG_CONTAINER_ERROR(NoDataSize);
 		return;
 	}
 
 	if (hm_Contains(map, key)) {
-		PRINT_HM_ERROR(HM_KeyAlreadyExists);
+		LOG_CONTAINER_ERROR(KeyAlreadyExists);
 		return;
 	}
 
@@ -156,13 +137,13 @@ void hm_Push(HashMap* map, const string key, void* data_) {
 	if (!map->data) {
 		map->data = malloc(sizeof(BinaryTree));
 		if (!map->data) {
-			PRINT_HM_ERROR(HM_AllocFail);
+			LOG_CONTAINER_ERROR(MemAllocationFail);
 			return;
 		}
 		*(map->data) = bt_Create(sizeof(LinkedList), false);
 		HashNode tempNode = (HashNode){key, malloc(map->dataSize)};
 		if (!tempNode.data) {
-			PRINT_HM_ERROR(HM_AllocFail);
+			LOG_CONTAINER_ERROR(MemAllocationFail);
 			free(map->data);
 			return;
 		}
@@ -176,7 +157,7 @@ void hm_Push(HashMap* map, const string key, void* data_) {
 
 	HashNode tempNode = (HashNode){key, malloc(map->dataSize)};
 	if (!tempNode.data) {
-		PRINT_HM_ERROR(HM_AllocFail);
+		LOG_CONTAINER_ERROR(MemAllocationFail);
 		return;
 	}
 	memcpy(tempNode.data, data_, map->dataSize);
@@ -196,7 +177,7 @@ void hm_Push(HashMap* map, const string key, void* data_) {
 
 void hm_Remove(HashMap* map, const string key, bool clear_recursive) {
 	if (!hm_Contains(map, key)) {
-		PRINT_HM_ERROR(HM_KeyNotFound);
+		LOG_CONTAINER_ERROR(KeyNotFound);
 		return;
 	}
 
@@ -230,7 +211,7 @@ void hm_Remove(HashMap* map, const string key, bool clear_recursive) {
 	}
 
 	if (keyIdx >= tempList->elementCount) {
-		PRINT_HM_ERROR(HM_KeyNotFound);	 // The user messed up on this one
+		LOG_CONTAINER_ERROR(KeyNotFound);  // The user messed up on this one
 		return;
 	}
 
@@ -249,12 +230,12 @@ void hm_Remove(HashMap* map, const string key, bool clear_recursive) {
 
 bool hm_Contains(HashMap* map, const string key) {
 	if (!map) {
-		PRINT_HM_ERROR(HM_IsNullptr);
+		LOG_CONTAINER_ERROR(NullContainer);
 		return false;
 	}
 
 	if (!map->dataSize) {
-		PRINT_HM_ERROR(HM_EmptyDataSize);
+		LOG_CONTAINER_ERROR(NoDataSize);
 		return false;
 	}
 

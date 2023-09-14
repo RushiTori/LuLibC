@@ -1,37 +1,15 @@
-#include <LuArray.h>
+#include "LuArray.h"
 
-enum ARR_ErrorCodes {
-	ARR_ArrIsNullptr = 0,
-	ARR_OutOfBounds,
-	ARR_EmptyDataSize,
-	ARR_NoDataPassed,
-	ARR_AllocFail,
-	ARR_ReAllocFail,
-	ARR_ErrorCount
-};
-
-static const string ARR_ErrorMessages[ARR_ErrorCount] = {
-	"Array Passed Is Nullptr",
-	"Array Out Of Bounds Exception",
-	"Size Of Element Is 0 (Zero)",
-	"Trying To Push/Insert/Remove Nullptr/Empty Memory",
-	"Array Allocation (malloc/calloc) Failed",
-	"Array Re-Allocation (realloc) Failed",
-};
-
-#define PRINT_ARR_ERROR(arr_err) fprintf(stderr, "Array Error %d: %s\n", arr_err, ARR_ErrorMessages[arr_err])
+#include "LuLogs.h"
 
 Array arr_Create(int dataSize, int initialCapacity, bool isDataArrays, bool isDataPointers) {
-	Array temp;
-	temp.data = NULL;
-	temp.end = NULL;
+	Array temp = EmptyArray;
 	temp.dataSize = dataSize;
-	temp.elementCount = 0;
 	temp.containsArrays = isDataArrays;
 	temp.containsPointers = isDataPointers;
 
 	if (!dataSize) {
-		PRINT_ARR_ERROR(ARR_EmptyDataSize);
+		LOG_CONTAINER_ERROR(NoDataSize);
 		return temp;
 	}
 
@@ -39,7 +17,7 @@ Array arr_Create(int dataSize, int initialCapacity, bool isDataArrays, bool isDa
 
 	temp.data = calloc(initialCapacity, dataSize);
 	if (!temp.data) {
-		PRINT_ARR_ERROR(ARR_AllocFail);
+		LOG_CONTAINER_ERROR(MemAllocationFail);
 		return temp;
 	}
 	temp.end = ((char*)temp.data) + (initialCapacity * dataSize);
@@ -47,14 +25,13 @@ Array arr_Create(int dataSize, int initialCapacity, bool isDataArrays, bool isDa
 }
 
 void arr_Clear(Array* arr, bool clear_recursive) {
-	// WIP
 	if (!arr) {
-		PRINT_ARR_ERROR(ARR_ArrIsNullptr);
+		LOG_CONTAINER_ERROR(NullContainer);
 		return;
 	}
 
 	if (!arr->dataSize) {
-		PRINT_ARR_ERROR(ARR_EmptyDataSize);
+		LOG_CONTAINER_ERROR(NoDataSize);
 		return;
 	}
 
@@ -88,17 +65,17 @@ void arr_Clear(Array* arr, bool clear_recursive) {
 
 void* arr_Get(Array* arr, uint index) {
 	if (!arr) {
-		PRINT_ARR_ERROR(ARR_ArrIsNullptr);
+		LOG_CONTAINER_ERROR(NullContainer);
 		return NULL;
 	}
 
 	if (!arr->dataSize) {
-		PRINT_ARR_ERROR(ARR_EmptyDataSize);
+		LOG_CONTAINER_ERROR(NoDataSize);
 		return NULL;
 	}
 
 	if (!arr->data || index >= arr->elementCount) {
-		PRINT_ARR_ERROR(ARR_OutOfBounds);
+		LOG_CONTAINER_ERROR(OutOfBounds);
 		return NULL;
 	}
 
@@ -110,12 +87,12 @@ void arr_Set(Array* arr, uint index, const void* data_, uint count) {
 	if (!temp) return;
 
 	if (!data_ || !count) {
-		PRINT_ARR_ERROR(ARR_NoDataPassed);
+		LOG_CONTAINER_ERROR(NullDataPassed);
 		return;
 	}
 
 	if ((index + count) > arr->elementCount) {
-		PRINT_ARR_ERROR(ARR_OutOfBounds);
+		LOG_CONTAINER_ERROR(OutOfBounds);
 		return;
 	}
 
@@ -124,12 +101,12 @@ void arr_Set(Array* arr, uint index, const void* data_, uint count) {
 
 void arr_Push(Array* arr, const void* data_, uint count) {
 	if (!arr) {
-		PRINT_ARR_ERROR(ARR_ArrIsNullptr);
+		LOG_CONTAINER_ERROR(NullContainer);
 		return;
 	}
 
 	if (!data_ || !count) {
-		PRINT_ARR_ERROR(ARR_NoDataPassed);
+		LOG_CONTAINER_ERROR(NullDataPassed);
 		return;
 	}
 
@@ -138,7 +115,7 @@ void arr_Push(Array* arr, const void* data_, uint count) {
 	if (!arr->data) {
 		arr->data = malloc(data_len);
 		if (!arr->data) {
-			PRINT_ARR_ERROR(ARR_AllocFail);
+			LOG_CONTAINER_ERROR(MemAllocationFail);
 			return;
 		}
 		memcpy(arr->data, data_, data_len);
@@ -154,7 +131,7 @@ void arr_Push(Array* arr, const void* data_, uint count) {
 		uint newSize = maxSize * 2;
 		void* tempRealloc = realloc(arr->data, newSize);
 		if (!tempRealloc) {
-			PRINT_ARR_ERROR(ARR_ReAllocFail);
+			LOG_CONTAINER_ERROR(MemReallocationFail);
 			return;
 		}
 		arr->data = tempRealloc;
@@ -167,7 +144,7 @@ void arr_Push(Array* arr, const void* data_, uint count) {
 
 void arr_Insert(Array* arr, uint index, const void* data_, uint count) {
 	if (!arr) {
-		PRINT_ARR_ERROR(ARR_ArrIsNullptr);
+		LOG_CONTAINER_ERROR(NullContainer);
 		return;
 	}
 
@@ -177,12 +154,12 @@ void arr_Insert(Array* arr, uint index, const void* data_, uint count) {
 	}
 
 	if (!data_ || !count) {
-		PRINT_ARR_ERROR(ARR_NoDataPassed);
+		LOG_CONTAINER_ERROR(NullDataPassed);
 		return;
 	}
 
 	if (index > arr->elementCount) {
-		PRINT_ARR_ERROR(ARR_OutOfBounds);
+		LOG_CONTAINER_ERROR(OutOfBounds);
 		return;
 	}
 
@@ -194,7 +171,7 @@ void arr_Insert(Array* arr, uint index, const void* data_, uint count) {
 		uint newSize = maxSize * 2;
 		void* tempRealloc = realloc(arr->data, newSize);
 		if (!tempRealloc) {
-			PRINT_ARR_ERROR(ARR_ReAllocFail);
+			LOG_CONTAINER_ERROR(MemReallocationFail);
 			return;
 		}
 		arr->data = tempRealloc;
@@ -210,14 +187,14 @@ void arr_Insert(Array* arr, uint index, const void* data_, uint count) {
 
 void arr_Remove(Array* arr, uint index, uint count, bool clear_recursive) {
 	if (!arr) {
-		PRINT_ARR_ERROR(ARR_ArrIsNullptr);
+		LOG_CONTAINER_ERROR(NullContainer);
 		return;
 	}
 
 	if (!count) return;
 
 	if (!arr->data || (index + count) > arr->elementCount) {
-		PRINT_ARR_ERROR(ARR_OutOfBounds);
+		LOG_CONTAINER_ERROR(OutOfBounds);
 		return;
 	}
 
@@ -259,7 +236,7 @@ void arr_Remove(Array* arr, uint index, uint count, bool clear_recursive) {
 
 uint arr_GetAllocatedSize(const Array* arr) {
 	if (!arr) {
-		PRINT_ARR_ERROR(ARR_ArrIsNullptr);
+		LOG_CONTAINER_ERROR(NullContainer);
 		return 0;
 	}
 	return ((char*)arr->end) - ((char*)arr->data);
@@ -267,12 +244,12 @@ uint arr_GetAllocatedSize(const Array* arr) {
 
 void arr_ShrinkToFit(Array* arr) {
 	if (!arr) {
-		PRINT_ARR_ERROR(ARR_ArrIsNullptr);
+		LOG_CONTAINER_ERROR(NullContainer);
 		return;
 	}
 
 	if (!arr->dataSize) {
-		PRINT_ARR_ERROR(ARR_EmptyDataSize);
+		LOG_CONTAINER_ERROR(NoDataSize);
 		return;
 	}
 
@@ -287,7 +264,7 @@ void arr_ShrinkToFit(Array* arr) {
 	} else if (maxSize > usedSize) {
 		void* tempRealloc = realloc(arr->data, usedSize);
 		if (!tempRealloc) {
-			PRINT_ARR_ERROR(ARR_ReAllocFail);
+			LOG_CONTAINER_ERROR(MemReallocationFail);
 			return;
 		}
 		arr->data = tempRealloc;
@@ -297,7 +274,7 @@ void arr_ShrinkToFit(Array* arr) {
 
 bool arr_Reserve(Array* arr, uint count) {
 	if (!arr) {
-		PRINT_ARR_ERROR(ARR_ArrIsNullptr);
+		LOG_CONTAINER_ERROR(NullContainer);
 		return false;
 	}
 	void* tempRealloc = NULL;
@@ -305,13 +282,13 @@ bool arr_Reserve(Array* arr, uint count) {
 	if (!arr->data) {
 		tempRealloc = calloc(count, arr->dataSize);
 		if (!tempRealloc) {
-			PRINT_ARR_ERROR(ARR_AllocFail);
+			LOG_CONTAINER_ERROR(MemAllocationFail);
 			return false;
 		}
 	} else {
 		tempRealloc = realloc(arr->data, count * arr->dataSize);
 		if (!tempRealloc) {
-			PRINT_ARR_ERROR(ARR_ReAllocFail);
+			LOG_CONTAINER_ERROR(MemReallocationFail);
 			return false;
 		}
 	}

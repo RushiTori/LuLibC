@@ -9,6 +9,9 @@ typedef struct LinkedNode {
 	void* data;
 } LinkedNode;
 
+#define EmptyLinkedNode \
+	(LinkedNode) { .prev = NULL, .next = NULL, data = NULL }
+
 typedef struct LinkedList {
 	LinkedNode* begin;
 	LinkedNode* end;
@@ -16,6 +19,9 @@ typedef struct LinkedList {
 	uint elementCount;
 	bool containsPointers;
 } LinkedList;
+
+#define EmptyLinkedList \
+	(LinkedList) { .begin = NULL, .end = NULL, .dataSize = 0, .elementCount = 0, .containsPointers = false }
 
 LinkedList ll_Create(uint dataSize, bool isDataPointers);
 void ll_Clear(LinkedList* list, bool clear_recursive);

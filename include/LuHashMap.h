@@ -8,12 +8,18 @@ typedef struct HashNode {
 	void* data;
 } HashNode;
 
+#define EmptyHashNode \
+	(HashNode) { .key = NULL, .data = NULL }
+
 typedef struct HashMap {
 	BinaryTree* data;
 	uint dataSize;
 	uint elementCount;
 	bool containsPointers;
 } HashMap;
+
+#define EmptyHashMap \
+	(HashMap) { .data = NULL, .dataSize = 0, .elementCount = 0, .containsPointers = false }
 
 int hm_HashString(const string str);
 
