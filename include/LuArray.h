@@ -29,11 +29,16 @@
 #define DEFINE_ARRAY_FUNCTIONS(type)                                                                                  \
                                                                                                                       \
 	Array##type Array##type##Create(uint capacity) {                                                                  \
-		Array##type temp;                                                                                             \
-		temp.data = (capacity) ? calloc(capacity, sizeof(type)) : NULL;                                               \
-		if (capacity && !temp.data) LOG_CONTAINER_ERROR(MemAllocationFail);                                           \
+		Array##type temp = EmptyArray(type);                                                                          \
+		if (!capacity) return temp;                                                                                   \
+                                                                                                                      \
+		temp.data = calloc(capacity, sizeof(type));                                                                   \
+		if (!temp.data) {                                                                                             \
+			LOG_CONTAINER_ERROR(MemAllocationFail);                                                                   \
+			return;                                                                                                   \
+		}                                                                                                             \
+                                                                                                                      \
 		temp.capacity = capacity;                                                                                     \
-		temp.size = 0;                                                                                                \
 		return temp;                                                                                                  \
 	}                                                                                                                 \
                                                                                                                       \
@@ -44,8 +49,7 @@
 		}                                                                                                             \
                                                                                                                       \
 		free(arr->data);                                                                                              \
-		arr->size = 0;                                                                                                \
-		arr->capacity = 0;                                                                                            \
+		*arr = EmptyArray(type);                                                                                      \
 	}                                                                                                                 \
                                                                                                                       \
 	void Array##type##Push(Array##type* arr, type element) {                                                          \
@@ -251,6 +255,11 @@
 			return;                                                                                                   \
 		}                                                                                                             \
                                                                                                                       \
+		if (arr->size == 1) {                                                                                         \
+			Array##type##Clear(arr);                                                                                  \
+			return;                                                                                                   \
+		}                                                                                                             \
+                                                                                                                      \
 		if (idx != arr->size - 1) memcpy(arr->data + idx, arr->data + idx + 1, sizeof(type) * (arr->size - 1 - idx)); \
 		arr->size--;                                                                                                  \
                                                                                                                       \
@@ -283,6 +292,11 @@
                                                                                                                       \
 		if (idx + count > arr->size) {                                                                                \
 			LOG_CONTAINER_ERROR(OutOfBounds);                                                                         \
+			return;                                                                                                   \
+		}                                                                                                             \
+                                                                                                                      \
+		if (arr->size == count) {                                                                                     \
+			Array##type##Clear(arr);                                                                                  \
 			return;                                                                                                   \
 		}                                                                                                             \
                                                                                                                       \
