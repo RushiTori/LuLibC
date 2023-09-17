@@ -1,6 +1,6 @@
 #include "LuArray.h"
 
-#include "LuLogs.h"
+/*#include "LuLogs.h"
 
 Array arr_Create(int dataSize, int initialCapacity, bool isDataArrays, bool isDataPointers) {
 	Array temp = EmptyArray;
@@ -331,3 +331,6 @@ bool arr_Equals(const Array* arr, const Array* other) {
 
 	return true;
 }
+*/
+
+DEFINE_ARRAY_FUNCTIONS(byte)

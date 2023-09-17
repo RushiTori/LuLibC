@@ -92,15 +92,15 @@ string* io_LoadStrings(const string filePath) {
 		return NULL;
 	}
 
-	Array fileData = io_LoadBytes(filePath);
+	Arraybyte fileData = io_LoadBytes(filePath);
 
 	if (!fileData.data) {
 		return NULL;
 	}
 
-	arr_Push(&fileData, "\0", 1);
-	string* temp = str_SplitTokens(fileData.data, "\x0a\x0d");
-	arr_Clear(&fileData, false);
+	ArraybytePush(&fileData, '\0');
+	string* temp = str_SplitTokens((string)fileData.data, "\n\r");
+	ArraybyteClear(&fileData);
 	return temp;
 }
 
@@ -133,36 +133,36 @@ void io_SaveStrings(const string filePath, const string* lines) {
 	fclose(file);
 }
 
-Array io_LoadBytes(const string filePath) {
+Arraybyte io_LoadBytes(const string filePath) {
 	if (!filePath) {
 		fprintf(stderr, "File I/O Error: File Path Passed Is Nullptr\n");
-		return arr_Create(sizeof(char), 0, false, false);
+		return EmptyArray(byte);
 	}
 
 	if (!strlen(filePath)) {
 		fprintf(stderr, "File I/O Error: File Path Passed Is Empty\n");
-		return arr_Create(sizeof(char), 0, false, false);
+		return EmptyArray(byte);
 	}
 
 	FILE* file = fopen(filePath, "rb");
 	if (!file) {
 		fprintf(stderr, "File I/O Error: Could Not Read File\n\t\"%s\"\n", filePath);
-		return arr_Create(sizeof(char), 0, false, false);
+		return EmptyArray(byte);
 	}
 
 	fseek(file, 0, SEEK_END);
 	const uint fileSize = ftell(file);
-	Array fileData = arr_Create(sizeof(char), fileSize, false, false);
-	fileData.elementCount = fileSize;
+	Arraybyte fileData = ArraybyteCreate(fileSize);
+	fileData.size = fileSize;
 
 	fseek(file, 0, SEEK_SET);
-	fread(fileData.data, sizeof(char), fileSize, file);
+	fread(fileData.data, sizeof(byte), fileSize, file);
 
 	fclose(file);
 	return fileData;
 }
 
-void io_SaveBytes(const string filePath, const Array* fileData) {
+void io_SaveBytes(const string filePath, const Arraybyte* fileData) {
 	if (!filePath) {
 		fprintf(stderr, "File I/O Error: File Path Passed Is Nullptr\n");
 		return;
@@ -178,12 +178,7 @@ void io_SaveBytes(const string filePath, const Array* fileData) {
 		return;
 	}
 
-	if (!fileData->dataSize) {
-		fprintf(stderr, "File I/O Error: File Data Passed Is Invalid Size\n\t\"%s\"\n", filePath);
-		return;
-	}
-
-	if (!fileData->data || !fileData->elementCount) {
+	if (!fileData->data || !fileData->size) {
 		fprintf(stderr, "File I/O Error: File Data Passed Is Empty\n\t\"%s\"\n", filePath);
 		return;
 	}
@@ -194,7 +189,7 @@ void io_SaveBytes(const string filePath, const Array* fileData) {
 		return;
 	}
 
-	fwrite(fileData->data, fileData->dataSize, fileData->elementCount, file);
+	fwrite(fileData->data, sizeof(byte), fileData->size, file);
 
 	fclose(file);
 }

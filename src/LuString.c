@@ -225,9 +225,8 @@ string str_Replace(string src, const string seq, const string replace) {
 
 	if (!str_ContainsString(src, seq)) return NULL;
 
-	Array result = arr_Create(sizeof(char), 0, false, false);
+	Arraybyte result = ArraybyteCreate(srcLen + 1);
 
-	arr_Reserve(&result, srcLen + 1);
 	for (uint i = 0; i < srcLen; i++) {
 		bool isSeq = true;
 		for (uint j = 0; j < seqLen; j++) {
@@ -241,17 +240,17 @@ string str_Replace(string src, const string seq, const string replace) {
 			}
 		}
 		if (isSeq) {
-			arr_Push(&result, replace, replaceLen);
+			ArraybytePushAll(&result, (const byte*)replace, replaceLen);
 			i += seqLen;
 			i--;
 		} else {
-			arr_Push(&result, src + i, 1);
+			ArraybytePush(&result, src[i]);
 		}
 	}
 
-	arr_Push(&result, "\0", 1);
-	arr_ShrinkToFit(&result);
-	return result.data;
+	ArraybytePush(&result, '\0');
+	ArraybyteShrinkToFit(&result);
+	return (string)result.data;
 }
 
 string str_RemoveChars(string str, const string charsToRemove) {
