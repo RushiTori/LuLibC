@@ -3,11 +3,11 @@
 
 #include "LuUtils.h"
 
-#define DECLARE_ARRAY_TYPE(type) \
-	typedef struct {             \
-		type* data;              \
-		uint size;               \
-		uint capacity;           \
+#define DECLARE_ARRAY_TYPE(type)     \
+	typedef struct Array##type##_s { \
+		type* data;                  \
+		uint size;                   \
+		uint capacity;               \
 	} Array##type;
 
 #define EmptyArray(type) \
