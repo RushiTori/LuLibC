@@ -1,13 +1,13 @@
 #ifndef LU_UTILS_H
 #define LU_UTILS_H
 
-#include "LuConstants.h"
-#include "LuTypes.h"
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <limits.h>
+#include <math.h>
+#include <stdlib.h>
+
+#include "LuConstants.h"
+#include "LuLogs.h"
+#include "LuTypes.h"
 
 #define logN(base, num) (log(num) / log(base))
 
