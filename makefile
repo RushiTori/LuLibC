@@ -17,7 +17,7 @@ endif
 # ========= Everything project related =========
 
 
-PROJ    := libLuLib
+PROJ    := libLuLibC
 TARGET  := $(PROJ).a
 DTARGET := $(PROJ)_debug.a
 
