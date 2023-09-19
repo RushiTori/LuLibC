@@ -35,7 +35,7 @@
 		temp.data = calloc(capacity, sizeof(type));                                                                   \
 		if (!temp.data) {                                                                                             \
 			LOG_CONTAINER_ERROR(MemAllocationFail);                                                                   \
-			return temp;                                                                                                   \
+			return temp;                                                                                              \
 		}                                                                                                             \
                                                                                                                       \
 		temp.capacity = capacity;                                                                                     \
