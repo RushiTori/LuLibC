@@ -29,4 +29,6 @@ double getDeltaTimeSeconds(const Timer* start, const Timer* end);
 
 double asbVal(double val);
 
+extern const string ProjectTitle;
+
 #endif	// LU_UTILS_H
