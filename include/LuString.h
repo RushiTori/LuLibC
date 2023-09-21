@@ -1,5 +1,5 @@
-#ifndef L_STRING_H
-#define L_STRING_H
+#ifndef LU_STRING_H
+#define LU_STRING_H
 
 #include "LuUtils.h"
 
@@ -33,4 +33,4 @@ char str_ToUpperChar(char c);
 string str_ToUpper(string src);
 string str_ToUpperRange(string src, uint range);
 
-#endif	// L_STRING_H
+#endif	// LU_STRING_H

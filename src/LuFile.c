@@ -1,7 +1,9 @@
 #include "LuFile.h"
-#include "LuString.h"
+
 #include <dirent.h>
 #include <errno.h>
+
+#include "LuString.h"
 
 string* io_OpenDirectoryRecursive(const string dirPath) {
 	string* paths = io_OpenDirectory(dirPath);

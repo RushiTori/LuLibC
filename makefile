@@ -35,7 +35,7 @@ else ifeq ($(USED_OS), Linux)
 endif
 
 STATIC_LIB_PATH := $(STATIC_PATH)/lib
-STATIC_H_PATH   := $(STATIC_PATH)/include/LuLib
+STATIC_H_PATH   := $(STATIC_PATH)/include/LuLibC
 
 EXT     := c
 COMP    := gcc

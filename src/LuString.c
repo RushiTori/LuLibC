@@ -1,6 +1,6 @@
 
-#include <LuArray.h>
-#include <LuString.h>
+#include "LuArray.h"
+#include "LuString.h"
 
 bool str_IsDigit(char c) { return ((c >= '0') && (c <= '9')); }
 
