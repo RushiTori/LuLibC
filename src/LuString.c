@@ -1,6 +1,7 @@
 
-#include "LuArray.h"
 #include "LuString.h"
+
+#include "LuArray.h"
 
 bool str_IsDigit(char c) { return ((c >= '0') && (c <= '9')); }
 
@@ -153,19 +154,21 @@ ulong str_StrToUInt(const string str, uchar base, ulong maxValue) {
 		} else if (str_IsLetter(str[i])) {
 			charValue = str_ToLowerChar(str[i]) - 'a' + 10;
 		} else {
-			printf("StrToUInt : \'%c\' is not recognised a valid digit. returning : %lu\n", str[i], result);
+			printf("StrToUInt : \'%c\' is not a valid digit. returning : %" PRIu64 "\n", str[i], result);
 			break;
 		}
 
 		if (charValue >= base) {
-			printf("StrToUInt : \'%c\' is not a valid digit for base %d. returning : %lu\n", str[i], base, result);
+			printf("StrToUInt : \'%c\' is not a valid digit for base %d. returning : %" PRIu64 "\n", str[i], base,
+				   result);
 			break;
 		}
 
 		ulong temp = maxValue - charValue;
 		temp /= base;
 		if (result > temp) {
-			printf("StrToUInt : counting \'%c\' would go past %lu. returning : %lu\n", str[i], maxValue, result);
+			printf("StrToUInt : counting \'%c\' would go past %" PRIu64 ". returning : %" PRIu64 "\n", str[i], maxValue,
+				   result);
 			break;
 		}
 		result *= base;

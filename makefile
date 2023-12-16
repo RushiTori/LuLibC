@@ -21,11 +21,6 @@ PROJ    := libLuLibC
 TARGET  := $(PROJ).a
 DTARGET := $(PROJ)_debug.a
 
-ifeq ($(USED_OS), Windows)
-	TARGET  := $(PROJ).lib
-	DTARGET := $(PROJ)_debug.lib
-endif
-
 STATIC_PATH := errorLib
 
 ifeq ($(USED_OS), Windows)
@@ -103,9 +98,11 @@ libHeader:
 	@$(RM) LuLib.h
 	@touch LuLib.h
 	@echo "#ifndef LULIB_H" >> LuLib.h
-	@echo "#define LULIB_H\n" >> LuLib.h
+	@echo "#define LULIB_H" >> LuLib.h
+	@echo "" >> LuLib.h
 	@./createLibHeader.sh
-	@echo "\n#endif  // LULIB_H" >> LuLib.h
+	@echo "" >> LuLib.h
+	@echo "#endif  // LULIB_H" >> LuLib.h
 
 build: $(TARGET) 
 	@$(MAKE) --silent libHeader
