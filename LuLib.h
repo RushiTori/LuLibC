@@ -1,15 +1,15 @@
 #ifndef LULIB_H
 #define LULIB_H
 
-#include <LuLibC/LuArray.h>
-#include <LuLibC/LuBinaryTree.h>
-#include <LuLibC/LuConstants.h>
-#include <LuLibC/LuFile.h>
-#include <LuLibC/LuHashMap.h>
-#include <LuLibC/LuLinkedList.h>
-#include <LuLibC/LuLogs.h>
-#include <LuLibC/LuString.h>
-#include <LuLibC/LuTypes.h>
-#include <LuLibC/LuUtils.h>
+#include <LuLib/LuArray.h>
+#include <LuLib/LuConstants.h>
+#include <LuLib/LuHashTable.h>
+#include <LuLib/LuLinkedList.h>
+#include <LuLib/LuLogs.h>
+#include <LuLib/LuMath.h>
+#include <LuLib/LuMemSafety.h>
+#include <LuLib/LuPerlin.h>
+#include <LuLib/LuTypes.h>
+#include <LuLib/LuUtils.h>
 
-#endif  // LULIB_H
+#endif // LULIB_H

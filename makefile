@@ -1,168 +1,161 @@
-# Makefile by S739_Lucie - January 18th 2023
-# ====== Everything Command Calls related ======
+# Makefile by RushiTori - January 1st 2025
+# ====== Everything Makefile internal related ======
 
-MAKEFLAGS += --no-print-directory
-
-USED_OS := ERROR
-CLS     := clear
-
+rwildcard=$(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2) $(filter $(subst *,%,$2),$d))
+MAKEFLAGS+=--no-print-directory
+RM+=-r
+DEBUG:=0
+RELEASE:=1
+INSTALL_SUPPORTED:=1
 ifdef OS
-	USED_OS := Windows
-endif
-
-ifeq ($(shell uname), Linux)
-	USED_OS := Linux
+else ifeq ($(shell uname), Linux)
+else
+	INSTALL_SUPPORTED:=0
 endif
 
 # ========= Everything project related =========
 
+CC:=gcc
+LD:=ar
+SRC_EXT:=c
+HDS_EXT:=h
+OBJ_EXT:=o
+DEP_EXT:=d
 
-PROJ    := libLuLibC
-TARGET  := $(PROJ).a
-DTARGET := $(PROJ)_debug.a
+NAME:=LuLib
+HDR_NAME:=$(NAME).$(HDS_EXT)
+LIB_NAME:=lib$(NAME).a
+HDR_GUARD:=LULIB_H
 
-STATIC_PATH := errorLib
-
-ifeq ($(USED_OS), Windows)
-	STATIC_PATH := C:/CustomLibs
-else ifeq ($(USED_OS), Linux)
-	STATIC_PATH := /usr/local
+MAIN_INST_DIR:=./
+ifdef OS
+	MAIN_INST_DIR:=C:/CustomLibs
+else ifeq ($(shell uname), Linux)
+	MAIN_INST_DIR:=/usr/local
 endif
-
-STATIC_LIB_PATH := $(STATIC_PATH)/lib
-STATIC_H_PATH   := $(STATIC_PATH)/include/LuLibC
-
-EXT     := c
-COMP    := gcc
-LINK    := ar -rcs
+LIB_INST_DIR:=$(MAIN_INST_DIR)/lib
+HDS_INST_SUB_DIR:=LuLib
+HDS_INST_DIR:=$(MAIN_INST_DIR)/include/$(HDS_INST_SUB_DIR)
 
 # ========== Everything files related ==========
 
-INC_DIR   := include
-SRC_DIR   := src
-OBJ_DIR   := objs
+HDS_DIR:=include
+SRC_DIR:=src
+OBJ_DIR:=objs
 
-SRC_FILES := $(wildcard $(SRC_DIR)/*.$(EXT)) $(wildcard $(SRC_DIR)/**/*.$(EXT)) 
-OBJ_FILES := $(SRC_FILES:$(SRC_DIR)/%.$(EXT)=$(OBJ_DIR)/$(USED_OS)/%.o)
-INC_FILES := $(wildcard $(INC_DIR)/*.h)
+HDS_FILES:=$(call rwildcard,$(HDS_DIR),*.$(HDS_EXT))
+SRC_FILES:=$(call rwildcard,$(SRC_DIR),*.$(SRC_EXT))
+OBJ_FILES:=$(SRC_FILES:$(SRC_DIR)/%.$(SRC_EXT)=$(OBJ_DIR)/%.$(OBJ_EXT))
+DEP_FILES:=$(SRC_FILES:$(SRC_DIR)/%.$(SRC_EXT)=$(OBJ_DIR)/%.$(DEP_EXT))
+
+INST_HDS_FILES:=$(HDS_FILES:$(HDS_DIR)/%=$(HDS_INST_DIR)/%)
 
 # ========== Everything flags related ==========
 
-O_FLAGS := -O3 -I include/ -std=c2x -Wall -Wextra -Werror -Wfatal-errors -pedantic -pedantic-errors -Wcast-align -Wcast-qual -Wdisabled-optimization -Wformat=2 -Winit-self -Wlogical-op -Wmissing-include-dirs -Wredundant-decls -Wshadow -Wstrict-overflow=5 -Wundef -Wno-unused -Wno-variadic-macros -Wno-parentheses -fdiagnostics-show-option
+HDS_PATHS:=$(addprefix -I,$(sort $(dir $(HDS_FILES))))
+STD_FLAGS:=-std=c2x -Wall -Wextra -Werror -Wfatal-errors 
+CCFLAGS:=$(HDS_PATHS) $(STD_FLAGS)
+ifeq ($(DEBUG), 1)
+	CCFLAGS+=-g
+else
+	ifeq ($(RELEASE), 1)
+		CCFLAGS+=-O3
+	endif
+endif
+
+LDFLAGS:=-rcs
 
 # =========== Every usable functions ===========
 
 # Basic Build
 
-all:
-	@$(MAKE) --silent build
+build: $(LIB_NAME) buildHeader
 
-reinstall:
-	@$(MAKE) --silent clean
-	@$(MAKE) --silent install
+$(LIB_NAME): $(OBJ_FILES)
+	@echo Linking $@
+	@$(LD) $(LDFLAGS) $@ $^
 
-install:
-	@$(MAKE) --silent build
-ifeq ($(USED_OS), Linux)
-	@mkdir -p $(STATIC_LIB_PATH)
-	@echo Installing $(TARGET) at /usr/local/lib/
-	@cp --update $(TARGET) $(STATIC_LIB_PATH)/$(notdir $(TARGET))
+debug:
+	@$(MAKE) DEBUG=1
 
-	@mkdir -p $(STATIC_H_PATH)/
-	@echo Installing the headers at $(STATIC_H_PATH)/
-	@cp --update LuLib.h $(STATIC_PATH)/include/LuLib.h
-	@$(MAKE) --silent installHeaders
+release:
+	@$(MAKE) RELEASE=1
 
-else ifeq ($(USED_OS), Windows)
-	@mkdir -p $(STATIC_LIB_PATH)
-	@echo Installing $(TARGET) at C:/CustomLibs/lib/
-	@cp --update $(TARGET) $(STATIC_LIB_PATH)/$(notdir $(TARGET))
+-include $(DEP_FILES)
+$(OBJ_DIR)/%.$(OBJ_EXT): $(SRC_DIR)/%.$(SRC_EXT)
+	@echo Compiling $< into $@
+	@mkdir -p $(dir $@)
+	@$(CC) -c $< -o $@ $(CCFLAGS) -MMD
 
-	@mkdir -p $(STATIC_H_PATH)/
-	@echo Installing the headers at $(STATIC_H_PATH)/
-	@echo Installing LuLib.h
-	@cp --update LuLib.h $(STATIC_PATH)/include/LuLib.h
-	@$(MAKE) --silent installHeaders
+buildHeader:
+	@$(RM) $(HDR_NAME)
+	@touch $(HDR_NAME)
+	@echo "#ifndef" $(HDR_GUARD) >> $(HDR_NAME)
+	@echo "#define" $(HDR_GUARD) >> $(HDR_NAME)
+	@echo "" >> $(HDR_NAME)
+	@for hdr in $(notdir $(HDS_FILES)) ; do \
+		echo -n "#include <"        >> $(HDR_NAME) ; \
+		echo -n $(HDS_INST_SUB_DIR) >> $(HDR_NAME) ; \
+		echo -n "/"                 >> $(HDR_NAME) ; \
+		echo -n $$hdr               >> $(HDR_NAME) ; \
+		echo    ">"                 >> $(HDR_NAME) ; \
+	done
+	@echo "" >> $(HDR_NAME)
+	@echo "#endif //" $(HDR_GUARD) >> $(HDR_NAME)
 
-else
-	@echo Can't automatically install this lib on your system
+install: release buildHeader
+ifeq ($(INSTALL_SUPPORTED), 0)
+	@echo Cannot auto-install this lib on your system
+	@exit 1
 endif
+	@echo Installing $(LIB_NAME) at $(LIB_INST_DIR)
+	@cp -u $(LIB_NAME) $(LIB_INST_DIR)/$(LIB_NAME)
 
+	@echo Installing $(HDR_NAME) to $(MAIN_INST_DIR)/include/
+	@cp -u $(HDR_NAME) $(MAIN_INST_DIR)/include/$(HDR_NAME)
 
-installHeaders: $(patsubst $(INC_DIR)/%, $(STATIC_H_PATH)/%, $(INC_FILES))
-$(STATIC_H_PATH)/%.h: $(INC_DIR)/%.h
-	@echo installing $(patsubst %.o, %,$(notdir $@))
-	@cp --update $< $@
+	@echo Installing the headers at $(HDS_INST_DIR)
+	@mkdir -p $(HDS_INST_DIR)
+	@$(MAKE) --silent installHeaders
 
-libHeader: 
-	@$(RM) LuLib.h
-	@touch LuLib.h
-	@echo "#ifndef LULIB_H" >> LuLib.h
-	@echo "#define LULIB_H" >> LuLib.h
-	@echo "" >> LuLib.h
-	@./createLibHeader.sh
-	@echo "" >> LuLib.h
-	@echo "#endif  // LULIB_H" >> LuLib.h
+installHeaders: $(INST_HDS_FILES)
+$(HDS_INST_DIR)/%.$(HDS_EXT): $(HDS_DIR)/%.$(HDS_EXT)
+	@echo Installing $(notdir $@)
+	@cp -u $< $@
 
-build: $(TARGET) 
-	@$(MAKE) --silent libHeader
+uninstall:
+ifeq ($(INSTALL_SUPPORTED), 0)
+	@echo Cannot auto-uninstall this lib on your system
+	@exit 1
+endif
+	@echo Uninstalling $(LIB_NAME) from $(LIB_INST_DIR)
+	@$(RM) $(LIB_INST_DIR)/$(LIB_NAME)
 
-$(TARGET): $(OBJ_FILES)
-	@echo Linking the static library
-	@$(LINK) $@ $^ 
+	@echo Uninstalling $(HDR_NAME) from $(MAIN_INST_DIR)/include/
+	@$(RM) $(MAIN_INST_DIR)/include/$(HDR_NAME)
 
-# Debug Build
-
-debug: $(DTARGET)
-
-$(DTARGET) : $(OBJ_FILES)
-	@echo Linking the static library
-	@$(LINK) $@ $^ 
-
-# Obj and Header files compiling
-
-objects: $(OBJ_FILES)
-$(OBJ_DIR)/$(USED_OS)/%.o: $(SRC_DIR)/%.$(EXT)
-	@echo Compiling $(patsubst %.o, %,$(notdir $@))
-	@$(COMP) -c $< -o $@ $(O_FLAGS)
-
-
-# File Cleaners
+	@echo Uninstalling the headers from $(HDS_INST_DIR)
+	@$(RM) -r $(HDS_INST_DIR)
 
 clean:
-	$(RM) $(OBJ_DIR)/$(USED_OS)/*.o
-	$(RM) $(OBJ_DIR)/$(USED_OS)/**/*.o
-	$(RM) $(PROJ).a
-	$(RM) $(PROJ).lib
-	$(RM) $(PROJ)_debug.a
-	$(RM) $(PROJ)_debug.lib
-	$(RM) LuLib.h
-	$(CLS)
+	@echo Deleting $(OBJ_DIR) folder
+	@$(RM) $(OBJ_DIR)
 
-# Makefile Debugging/Usefull Functions
+wipe: clean
+	@echo Deleting $(LIB_NAME)
+	@$(RM) $(LIB_NAME)
+	@echo Deleting $(HDR_NAME)
+	@$(RM) $(HDR_NAME)
 
-subDir:
-	mkdir -p $(sort $(dir $(OBJ_FILES)))
-	touch -f $(addsuffix DO_NOT_REMOVE,$(sort $(dir $(OBJ_FILES))))
+rebuild: wipe build
 
-rebuild:
-	@$(MAKE) --silent clean
-	@$(MAKE) --silent build
+redebug: wipe debug
 
-# Makefile Debugging/Usefull Functions
-showOS: 
-	@echo $(USED_OS)
+rerelease: wipe release
 
-showFiles:
-	@echo Source files
-	@echo $(SRC_FILES)
-	@echo 
-	@echo Object files
-	@echo $(OBJ_FILES)
-	@echo 
-	@echo Header files
-	@echo $(INC_FILES)
-	@echo 
-	@echo Install paths
-	@echo "lib path     :" $(STATIC_LIB_PATH)
-	@echo "headers path :" $(STATIC_H_PATH)
+reinstall: uninstall wipe install 
+
+.PHONY: build debug release install 
+.PHONY: clean wipe 
+.PHONY: rebuild redebug rerelease reinstall
+.PHONY: buildHeader installHeaders
