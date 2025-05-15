@@ -8,7 +8,14 @@
 
 #define LogN(base, num) (log(num) / log(base))
 
-#define Lerp(start, end, t) ((start) + ((float)((end) - (start)) * (t)))
+#define Lerp(start, end, t)                                   \
+	({                                                        \
+		const __typeof__(start) start_ = start;               \
+		const __typeof__(end) end_ = end;                     \
+		const float diff_start_end_ = (float)(end_ - start_); \
+		const __typeof__(t) t_ = t;                           \
+		diff_start_end_* t_ + start_;                         \
+	})
 
 #define Min(a, b)                   \
 	({                              \
