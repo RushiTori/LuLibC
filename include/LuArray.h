@@ -235,7 +235,4 @@
 		return arr->size;                                                                     \
 	}
 
-DeclareArrayType(byte, ByteBuffer);
-DeclareArrayMethods(byte, ByteBuffer);
-
 #endif	// LU_ARRAY_H

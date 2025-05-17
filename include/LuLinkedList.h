@@ -424,7 +424,4 @@
 		return list->size;                                                                     \
 	}
 
-DeclareLinkedListType(byte, bylist);
-DeclareLinkedListMethods(byte, bylist);
-
 #endif	// LU_LINKED_LIST_H
