@@ -198,7 +198,7 @@ bool LuFileReadUInt64Ex(FILE* stream, uint64_t* buf, LuFileEndian endian) { Read
 bool LuFileReadFloatEx(FILE* stream, float* buf, LuFileEndian endian) { ReadExBase(float, Swap32); }
 bool LuFileReadDoubleEx(FILE* stream, double* buf, LuFileEndian endian) { ReadExBase(double, Swap64); }
 
-// LuFile Read functions
+// LuFile Write functions
 
 #define WriteStringBase()                                                       \
 	{                                                                           \

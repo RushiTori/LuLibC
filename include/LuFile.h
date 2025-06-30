@@ -78,7 +78,7 @@ bool LuFileReadDoubleEx(FILE* stream, double* buf, LuFileEndian endian);
 #define LuFileReadUIntEx LuFileReadUInt32Ex
 #define LuFileReadULongEx LuFileReadUInt64Ex
 
-// LuFile Read functions
+// LuFile Write functions
 
 #define LuFileWriteRaw fwrite
 
