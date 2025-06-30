@@ -42,23 +42,15 @@ void LuMatrixFree(LuMatrix* matrix) {
 	Free(matrix);
 }
 
-float* LuMatrixGetRef(const LuMatrix* matrix, size_t x, size_t y) {
-	return matrix->data + Index1D(x, y, matrix->width);
-}
+float* LuMatrixGetRef(const LuMatrix* matrix, size_t x, size_t y) { return matrix->data + Index1D(x, y, matrix->width); }
 
-float LuMatrixGet(const LuMatrix* matrix, size_t x, size_t y) {
-	return *LuMatrixGetRef(matrix, x, y);
-}
+float LuMatrixGet(const LuMatrix* matrix, size_t x, size_t y) { return *LuMatrixGetRef(matrix, x, y); }
 
-void LuMatrixSet(const LuMatrix* matrix, size_t x, size_t y, float value) {
-	*LuMatrixGetRef(matrix, x, y) = value;
-}
+void LuMatrixSet(const LuMatrix* matrix, size_t x, size_t y, float value) { *LuMatrixGetRef(matrix, x, y) = value; }
 
 bool LuMatrixIsSquare(const LuMatrix* matrix) { return (matrix->width == matrix->height); }
 
-bool LuMatrixCanHadamard(const LuMatrix* a, const LuMatrix* b) {
-	return ((a->width == b->width) && (a->height == b->height));
-}
+bool LuMatrixCanHadamard(const LuMatrix* a, const LuMatrix* b) { return ((a->width == b->width) && (a->height == b->height)); }
 
 LuMatrix* LuMatrixAdd(LuMatrix* a, const LuMatrix* b) {
 	if (LuMatrixCanHadamard(a, b)) {
@@ -90,9 +82,7 @@ LuMatrix* LuMatrixHadamardProduct(LuMatrix* a, const LuMatrix* b) {
 	return a;
 }
 
-LuMatrix* LuMatrixHadamardSquare(LuMatrix* matrix) {
-	return LuMatrixHadamardProduct(matrix, matrix);
-}
+LuMatrix* LuMatrixHadamardSquare(LuMatrix* matrix) { return LuMatrixHadamardProduct(matrix, matrix); }
 
 LuMatrix* LuMatrixHadamardDiv(LuMatrix* a, const LuMatrix* b) {
 	if (LuMatrixCanHadamard(a, b)) {

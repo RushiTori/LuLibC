@@ -231,17 +231,9 @@ bool LuFileWriteSString64(FILE* stream, const char* str) { WriteSStringBase(uint
 		WriteStringBase();                            \
 	}
 
-bool LuFileWriteSString16Ex(FILE* stream, const char* str, LuFileEndian endian) {
-	WriteSStringExBase(uint16_t, LuFileWriteUInt16Ex);
-}
-
-bool LuFileWriteSString32Ex(FILE* stream, const char* str, LuFileEndian endian) {
-	WriteSStringExBase(uint32_t, LuFileWriteUInt32Ex);
-}
-
-bool LuFileWriteSString64Ex(FILE* stream, const char* str, LuFileEndian endian) {
-	WriteSStringExBase(uint64_t, LuFileWriteUInt64Ex);
-}
+bool LuFileWriteSString16Ex(FILE* stream, const char* str, LuFileEndian endian) { WriteSStringExBase(uint16_t, LuFileWriteUInt16Ex); }
+bool LuFileWriteSString32Ex(FILE* stream, const char* str, LuFileEndian endian) { WriteSStringExBase(uint32_t, LuFileWriteUInt32Ex); }
+bool LuFileWriteSString64Ex(FILE* stream, const char* str, LuFileEndian endian) { WriteSStringExBase(uint64_t, LuFileWriteUInt64Ex); }
 
 #define WriteBase(type)                                                \
 	{                                                                  \
