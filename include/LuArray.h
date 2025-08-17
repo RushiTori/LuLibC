@@ -151,7 +151,7 @@
 	bool name##EraseAll(name* arr, size_t index, size_t count) {                                        \
 		type* dataIdx = arr->data + index;                                                              \
 		memcpy(dataIdx, dataIdx + count, (arr->size - index - count) * sizeof(type));                   \
-		arr->size--;                                                                                    \
+		arr->size -= count;                                                                             \
                                                                                                         \
 		if (arr->size <= arr->capacity / 2) return name##ShrinkToFit(arr);                              \
                                                                                                         \
