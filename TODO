@@ -1,0 +1,72 @@
+- coding conventions
+  - single threaded
+  - vartiable names in camelCase
+  - defines in UPPER_SNAKE
+  - everything else in PascalCase
+
+  - avoid nested function calls, prefer using more variables
+  - avoid malloc when possible, prefer static arrays
+  - use LuLib Containers for the love of brib
+  - remember that you want to touch target and not offset for the camera ffs
+  - in case of doubts, always refer to HeartTiles.png
+  - have commits be decently specific OR random quotes without contexts
+  - have the render clearly separate from the rest of the game
+  - have functions do one things
+
+- coding order
+  - Lucie:
+    - save and level datatypes
+  - Camille:
+    - physics and game containers
+
+    - down the line, audio
+
+
+- grid based
+- with some non-tiled elements
+
+- spikes
+- flying spikes
+
+- trigger zones
+
+- timer
+
+- escape room
+- multi-room levels
+
+- buttons (stay on) and levers (ON/OFF)
+
+- an elaborate moveset
+  - jump
+  - double jump
+  - dive
+  - and more...
+
+- ladders and ropes
+- moving elements
+- lasers
+- trampolines
+- invisible blocks
+- jump of faith
+- temporary abilities given by collectibles
+- textboxes that makes fun of the player
+- textboxes that obscures the view of the game from the player
+- teleporters
+
+- level editor
+- levels stored in binary format
+- player save stored in binary format
+- multiple save files
+  - 5 different slots
+  - checksums implemented and backups for the data
+
+- full keyboard controls
+- maybe gamepad support
+- control changes through an option menu
+
+- all 2D
+- physics simulation
+  - inertia
+  - euclidean model
+  - just so that we can make a ball pit in it
