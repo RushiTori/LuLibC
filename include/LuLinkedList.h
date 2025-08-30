@@ -24,23 +24,23 @@
 	type name##Get(const name* list, size_t index);                                 \
 	void name##Set(name* list, size_t index, type data);                            \
                                                                                     \
-	bool name##Push(name* list, const type data);                                   \
+	bool name##Push(name* list, type data);                                         \
 	bool name##PushAll(name* list, const type* data, size_t count);                 \
                                                                                     \
-	bool name##Insert(name* list, size_t index, const type data);                   \
+	bool name##Insert(name* list, size_t index, type data);                         \
 	bool name##InsertAll(name* list, size_t index, const type* data, size_t count); \
                                                                                     \
 	bool name##Erase(name* list, size_t index);                                     \
-	bool name##EraseIfEqu(name* list, const type data, CompareFunc func);           \
+	bool name##EraseIfEqu(name* list, type data, CompareFunc func);                 \
 	bool name##EraseAll(name* list, size_t index, size_t count);                    \
 	bool name##EraseRange(name* list, size_t start, size_t end);                    \
                                                                                     \
 	void name##Map(name* list, void (*func)(type*));                                \
 	void name##Sort(name* list, CompareFunc func);                                  \
                                                                                     \
-	bool name##Contains(const name* list, const type data, CompareFunc func);       \
-	size_t name##IndexOf(const name* list, const type data, CompareFunc func);      \
-	size_t name##LastIndexOf(const name* list, const type data, CompareFunc func)
+	bool name##Contains(const name* list, type data, CompareFunc func);             \
+	size_t name##IndexOf(const name* list, type data, CompareFunc func);            \
+	size_t name##LastIndexOf(const name* list, type data, CompareFunc func)
 
 #define DefineLinkedListMethods(type, name)                                                            \
 	name##Node* name##NodeCreate(name##Node* prev, name##Node* next, type data) {                      \
@@ -143,7 +143,7 @@
                                                                                                        \
 	void name##Set(name* list, size_t index, type data) { *name##GetRef(list, index) = data; }         \
                                                                                                        \
-	bool name##Push(name* list, const type data) {                                                     \
+	bool name##Push(name* list, type data) {                                                           \
 		if (!list->size) {                                                                             \
 			list->nodes = name##NodeCreate(NULL, NULL, data);                                          \
 			if (!list->nodes) return false;                                                            \
@@ -188,7 +188,7 @@
 		return true;                                                                                   \
 	}                                                                                                  \
                                                                                                        \
-	bool name##Insert(name* list, size_t index, const type data) {                                     \
+	bool name##Insert(name* list, size_t index, type data) {                                           \
 		if (!list->size) {                                                                             \
 			list->nodes = name##NodeCreate(NULL, NULL, data);                                          \
 			if (!list->nodes) return false;                                                            \
@@ -243,7 +243,7 @@
 		return true;                                                                                   \
 	}                                                                                                  \
                                                                                                        \
-	bool name##EraseIfEqu(name* list, const type data, CompareFunc func) {                             \
+	bool name##EraseIfEqu(name* list, type data, CompareFunc func) {                                   \
 		bool modifiedList = false;                                                                     \
                                                                                                        \
 		while (list->nodes) {                                                                          \
@@ -375,7 +375,7 @@
 		*list = name##Merge(a, b, func);                                                               \
 	}                                                                                                  \
                                                                                                        \
-	bool name##Contains(const name* list, const type data, CompareFunc func) {                         \
+	bool name##Contains(const name* list, type data, CompareFunc func) {                               \
 		if (!list->size) return false;                                                                 \
                                                                                                        \
 		name##Node* node = list->nodes;                                                                \
@@ -387,7 +387,7 @@
 		return false;                                                                                  \
 	}                                                                                                  \
                                                                                                        \
-	size_t name##IndexOf(const name* list, const type data, CompareFunc func) {                        \
+	size_t name##IndexOf(const name* list, type data, CompareFunc func) {                              \
 		if (!list->size) return list->size;                                                            \
                                                                                                        \
 		size_t idx = 0;                                                                                \
@@ -402,7 +402,7 @@
 		return list->size;                                                                             \
 	}                                                                                                  \
                                                                                                        \
-	size_t name##LastIndexOf(const name* list, const type data, CompareFunc func) {                    \
+	size_t name##LastIndexOf(const name* list, type data, CompareFunc func) {                          \
 		if (!list->size) return list->size;                                                            \
                                                                                                        \
 		if (list->size == 1) {                                                                         \

@@ -40,26 +40,26 @@ typedef enum HashNodeState { NODE_UNUSED = 0, NODE_USED, NODE_DELETED } HashNode
 		size_t capacity;                 \
 	} name
 
-#define DeclareHashTableMethods(type, name)                                \
-	name* name##Create(size_t capacity);                                   \
-	void name##Clear(name* table);                                         \
-	void name##Free(name* table);                                          \
-                                                                           \
-	type* name##GetRef(const name* table, HashKey key);                    \
-	type name##Get(const name* table, HashKey key);                        \
-	void name##Set(name* table, HashKey key, type data);                   \
-                                                                           \
-	bool name##Push(name* table, HashKey key, const type data);            \
-                                                                           \
-	bool name##Erase(name* table, HashKey key);                            \
-	bool name##EraseIfEqu(name* table, const type data, CompareFunc func); \
-                                                                           \
-	bool name##ShrinkToFit(name* table);                                   \
-	bool name##Reserve(name* table, size_t capacity);                      \
-	bool name##Grow(name* container);                                      \
-                                                                           \
-	void name##Map(name* table, void (*func)(type*));                      \
-                                                                           \
+#define DeclareHashTableMethods(type, name)                          \
+	name* name##Create(size_t capacity);                             \
+	void name##Clear(name* table);                                   \
+	void name##Free(name* table);                                    \
+                                                                     \
+	type* name##GetRef(const name* table, HashKey key);              \
+	type name##Get(const name* table, HashKey key);                  \
+	void name##Set(name* table, HashKey key, type data);             \
+                                                                     \
+	bool name##Push(name* table, HashKey key, type data);            \
+                                                                     \
+	bool name##Erase(name* table, HashKey key);                      \
+	bool name##EraseIfEqu(name* table, type data, CompareFunc func); \
+                                                                     \
+	bool name##ShrinkToFit(name* table);                             \
+	bool name##Reserve(name* table, size_t capacity);                \
+	bool name##Grow(name* container);                                \
+                                                                     \
+	void name##Map(name* table, void (*func)(type*));                \
+                                                                     \
 	bool name##Contains(const name* table, HashKey key)
 
 #define DefineHashTableMethods(type, name)                                                    \
@@ -105,7 +105,7 @@ typedef enum HashNodeState { NODE_UNUSED = 0, NODE_USED, NODE_DELETED } HashNode
                                                                                               \
 	void name##Set(name* table, HashKey key, type data) { *name##GetRef(table, key) = data; } \
                                                                                               \
-	bool name##Push(name* table, HashKey key, const type data) {                              \
+	bool name##Push(name* table, HashKey key, type data) {                                    \
 		if (table->size == table->capacity) {                                                 \
 			if (!name##Grow(table)) return false;                                             \
 		}                                                                                     \
@@ -152,7 +152,7 @@ typedef enum HashNodeState { NODE_UNUSED = 0, NODE_USED, NODE_DELETED } HashNode
 		return true;                                                                          \
 	}                                                                                         \
                                                                                               \
-	bool name##EraseIfEqu(name* table, const type data, CompareFunc func) {                   \
+	bool name##EraseIfEqu(name* table, type data, CompareFunc func) {                         \
 		bool success = false;                                                                 \
                                                                                               \
 		for (int i = table->capacity - 1; i >= 0; i--) {                                      \

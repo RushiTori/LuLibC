@@ -19,14 +19,14 @@
 	type name##Get(const name* arr, size_t index);                                 \
 	void name##Set(name* arr, size_t index, type data);                            \
                                                                                    \
-	bool name##Push(name* arr, const type data);                                   \
+	bool name##Push(name* arr, type data);                                         \
 	bool name##PushAll(name* arr, const type* data, size_t count);                 \
                                                                                    \
-	bool name##Insert(name* arr, size_t index, const type data);                   \
+	bool name##Insert(name* arr, size_t index, type data);                         \
 	bool name##InsertAll(name* arr, size_t index, const type* data, size_t count); \
                                                                                    \
 	bool name##Erase(name* arr, size_t index);                                     \
-	bool name##EraseIfEqu(name* arr, const type data, CompareFunc func);           \
+	bool name##EraseIfEqu(name* arr, type data, CompareFunc func);                 \
 	bool name##EraseAll(name* arr, size_t index, size_t count);                    \
 	bool name##EraseRange(name* arr, size_t start, size_t end);                    \
                                                                                    \
@@ -37,9 +37,9 @@
 	void name##Map(name* arr, void (*func)(type*));                                \
 	void name##Sort(name* arr, CompareFunc func);                                  \
                                                                                    \
-	bool name##Contains(const name* arr, const type data, CompareFunc func);       \
-	size_t name##IndexOf(const name* arr, const type data, CompareFunc func);      \
-	size_t name##LastIndexOf(const name* arr, const type data, CompareFunc func)
+	bool name##Contains(const name* arr, type data, CompareFunc func);             \
+	size_t name##IndexOf(const name* arr, type data, CompareFunc func);            \
+	size_t name##LastIndexOf(const name* arr, type data, CompareFunc func)
 
 #define DefineArrayMethods(type, name)                                                                \
 	name* name##Create(size_t capacity) {                                                             \
@@ -70,7 +70,7 @@
                                                                                                       \
 	void name##Set(name* arr, size_t index, type data) { arr->data[index] = data; }                   \
                                                                                                       \
-	bool name##Push(name* arr, const type data) {                                                     \
+	bool name##Push(name* arr, type data) {                                                           \
 		if (arr->size == arr->capacity) {                                                             \
 			if (!name##Grow(arr)) return false;                                                       \
 		}                                                                                             \
@@ -91,7 +91,7 @@
 		return true;                                                                                  \
 	}                                                                                                 \
                                                                                                       \
-	bool name##Insert(name* arr, size_t index, const type data) {                                     \
+	bool name##Insert(name* arr, size_t index, type data) {                                           \
 		if (index == arr->size) return name##Push(arr, data);                                         \
                                                                                                       \
 		if (arr->size == arr->capacity) {                                                             \
@@ -134,7 +134,7 @@
 		return true;                                                                                  \
 	}                                                                                                 \
                                                                                                       \
-	bool name##EraseIfEqu(name* arr, const type data, CompareFunc func) {                             \
+	bool name##EraseIfEqu(name* arr, type data, CompareFunc func) {                                   \
 		for (int i = arr->size - 1; i >= 0; i--) {                                                    \
 			if (func((const void*)&data, (const void*)(arr->data + i))) continue;                     \
                                                                                                       \
@@ -209,7 +209,7 @@
                                                                                                       \
 	void name##Sort(name* arr, CompareFunc func) { qsort(arr->data, arr->size, sizeof(type), func); } \
                                                                                                       \
-	bool name##Contains(const name* arr, const type data, CompareFunc func) {                         \
+	bool name##Contains(const name* arr, type data, CompareFunc func) {                               \
 		for (size_t i = 0; i < arr->size; i++) {                                                      \
 			if (!func(&data, arr->data + i)) return true;                                             \
 		}                                                                                             \
@@ -217,7 +217,7 @@
 		return false;                                                                                 \
 	}                                                                                                 \
                                                                                                       \
-	size_t name##IndexOf(const name* arr, const type data, CompareFunc func) {                        \
+	size_t name##IndexOf(const name* arr, type data, CompareFunc func) {                              \
 		for (size_t i = 0; i < arr->size; i++) {                                                      \
 			if (!func(&data, arr->data + i)) return i;                                                \
 		}                                                                                             \
@@ -225,7 +225,7 @@
 		return arr->size;                                                                             \
 	}                                                                                                 \
                                                                                                       \
-	size_t name##LastIndexOf(const name* arr, const type data, CompareFunc func) {                    \
+	size_t name##LastIndexOf(const name* arr, type data, CompareFunc func) {                          \
 		for (int i = arr->size - 1; i >= 0; i--) {                                                    \
 			if (!func(&data, arr->data + i)) return i;                                                \
 		}                                                                                             \
