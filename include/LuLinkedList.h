@@ -45,7 +45,7 @@
 #define DefineLinkedListMethods(type, name)                                                            \
 	name##Node* name##NodeCreate(name##Node* prev, name##Node* next, type data) {                      \
 		name##Node* node = NULL;                                                                       \
-		if (!Malloc(node, sizeof(name##Node))) return NULL;                                            \
+		if (!Calloc(node, 1, sizeof(name##Node))) return NULL;                                         \
                                                                                                        \
 		node->prev = prev;                                                                             \
 		node->next = next;                                                                             \

@@ -66,7 +66,7 @@ typedef enum HashNodeState { NODE_UNUSED = 0, NODE_USED, NODE_DELETED } HashNode
 	name* name##Create(size_t capacity) {                                                     \
 		name* table = NULL;                                                                   \
                                                                                               \
-		if (!Malloc(table, sizeof(name))) return NULL;                                        \
+		if (!Calloc(table, 1, sizeof(name))) return NULL;                                     \
 		if (capacity && !Calloc(table->nodes, capacity, sizeof(name##Node))) {                \
 			FreeAndReturn(table, NULL);                                                       \
 		}                                                                                     \

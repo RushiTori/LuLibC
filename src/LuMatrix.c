@@ -5,7 +5,7 @@
 
 LuMatrix* LuMatrixCreate(size_t width, size_t height) {
 	LuMatrix* matrix = NULL;
-	if (!Malloc(matrix, sizeof(LuMatrix))) return NULL;
+	if (!Calloc(matrix, 1, sizeof(LuMatrix))) return NULL;
 	if (!Calloc(matrix->data, width * height, sizeof(float))) FreeAndReturn(matrix, NULL);
 
 	LuMatrix matrixData = (LuMatrix){

@@ -45,7 +45,7 @@
 	name* name##Create(size_t capacity) {                                                             \
 		name* arr = NULL;                                                                             \
                                                                                                       \
-		if (!Malloc(arr, sizeof(name))) return NULL;                                                  \
+		if (!Calloc(arr, 1, sizeof(name))) return NULL;                                               \
 		if (capacity && !Calloc(arr->data, capacity, sizeof(type))) FreeAndReturn(arr, NULL);         \
                                                                                                       \
 		arr->capacity = capacity;                                                                     \
