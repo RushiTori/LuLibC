@@ -14,19 +14,19 @@
 		return __VA_ARGS__;     \
 	}
 
-#define Malloc(ptr, size)              \
-	({                                 \
-		const size_t size_ = size;     \
-                                       \
-		if (size_ == 0) {              \
-			ptr = NULL;                \
-			LogErrno(ENOBUFS);         \
-		} else {                       \
-			ptr = malloc(size_);       \
-			if (!ptr) LogErrno(errno); \
-		}                              \
-                                       \
-		ptr;                           \
+#define Malloc(ptr, size)           \
+	({                              \
+		const size_t size_ = size;  \
+                                    \
+		if (size_ == 0) {           \
+			ptr = NULL;             \
+			LogErrnoValue(ENOBUFS); \
+		} else {                    \
+			ptr = malloc(size_);    \
+			if (!ptr) LogErrno();   \
+		}                           \
+                                    \
+		ptr;                        \
 	})
 
 #define Calloc(ptr, count, size)         \
@@ -36,10 +36,10 @@
                                          \
 		if (count_ == 0 || size_ == 0) { \
 			ptr = NULL;                  \
-			LogErrno(ENOBUFS);           \
+			LogErrnoValue(ENOBUFS);      \
 		} else {                         \
 			ptr = calloc(count_, size_); \
-			if (!ptr) LogErrno(errno);   \
+			if (!ptr) LogErrno();        \
 		}                                \
                                          \
 		ptr;                             \
@@ -57,7 +57,7 @@
 			void* res = realloc(ptr, size_); \
 			if (!res) {                      \
 				success = false;             \
-				LogErrno(errno);             \
+				LogErrno();                  \
 			} else {                         \
 				ptr = res;                   \
 			}                                \
