@@ -11,6 +11,8 @@
 #include <LuLib/LuMatrix.h>
 #include <LuLib/LuMemSafety.h>
 #include <LuLib/LuPerlin.h>
+#include <LuLib/LuPlatforms.h>
+#include <LuLib/LuSocket.h>
 #include <LuLib/LuTypes.h>
 #include <LuLib/LuUtils.h>
 
