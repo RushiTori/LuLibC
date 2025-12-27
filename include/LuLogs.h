@@ -28,7 +28,7 @@ void LuLogSetFile(FILE* file);
 // Default: true
 bool LuLogGetVerbose(void);
 
-// Sets if the LuLog system can outputs or not
+// Sets if the LuLog module should output or not
 void LuLogSetVerbose(bool isVerbose);
 
 #define LogMessage(fmt, ...)                                         \
@@ -47,6 +47,12 @@ void LuLogSetVerbose(bool isVerbose);
 		return retVal;                  \
 	}
 
+#define LogStringAndExit(str, exitCode) \
+	{                                   \
+		LogString(str);                 \
+		exit(exitCode);                 \
+	}
+
 #define LogErrnoValue(errCode) LogString(strerror(errCode))
 
 #define LogErrnoValueAndReturn(errCode, retVal) \
@@ -55,12 +61,24 @@ void LuLogSetVerbose(bool isVerbose);
 		return retVal;                          \
 	}
 
+#define LogErrnoValueAndExit(errCode, exitCode) \
+	{                                           \
+		LogErrnoValue(errCode);                 \
+		exit(exitCode);                         \
+	}
+
 #define LogErrno() LogErrnoValue(errno)
 
 #define LogErrnoAndReturn(retVal) \
 	{                             \
 		LogErrno();               \
 		return retVal;            \
+	}
+
+#define LogErrnoAndExit(exitCode) \
+	{                             \
+		LogErrno();               \
+		exit(exitCode);           \
 	}
 
 #if defined(WINDOWS)
@@ -73,12 +91,24 @@ void LogWSAErrorValue(DWORD errCode);
 		return retVal;                             \
 	}
 
+#define LogWSAErrorValueAndExit(errCode, exitCode) \
+	{                                              \
+		LogWSAErrorValue(errCode);                 \
+		exit(exitCode);                            \
+	}
+
 #define LogWSAError() LogWSAErrorValue(WSAGetLastError())
 
 #define LogWSAErrorAndReturn(retVal) \
 	{                                \
 		LogWSAError();               \
 		return retVal;               \
+	}
+
+#define LogWSAErrorAndExit(exitCode) \
+	{                                \
+		LogWSAError();               \
+		exit(exitCode);              \
 	}
 
 void LogWindowsErrorValue(DWORD errCode);
@@ -89,12 +119,24 @@ void LogWindowsErrorValue(DWORD errCode);
 		return retVal;                                 \
 	}
 
+#define LogWindowsErrorValueAndExit(errCode, exitCode) \
+	{                                                  \
+		LogWindowsErrorValue(errCode);                 \
+		exit(exitCode);                                \
+	}
+
 #define LogWindowsError() LogWindowsErrorValue(GetLastError())
 
 #define LogWindowsErrorAndReturn(retVal) \
 	{                                    \
 		LogWindowsError();               \
 		return retVal;                   \
+	}
+
+#define LogWindowsErrorAndExit(exitCode) \
+	{                                    \
+		LogWindowsError();               \
+		exit(exitCode);                  \
 	}
 
 #endif	// Windows
