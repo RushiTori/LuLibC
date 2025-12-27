@@ -31,12 +31,9 @@ bool LuLogGetVerbose(void);
 // Sets if the LuLog module should output or not
 void LuLogSetVerbose(bool isVerbose);
 
-#define LogMessage(fmt, ...)                                         \
-	{                                                                \
-		if (LuLogGetVerbose()) {                                     \
-			fprintf(LuLogGetFile(), fmt __VA_OPT__(, ) __VA_ARGS__); \
-			fprintf(LuLogGetFile(), fmt __VA_OPT__(, ) __VA_ARGS__); \
-		}                                                            \
+#define LogMessage(fmt, ...)                                                            \
+	{                                                                                   \
+		if (LuLogGetVerbose()) fprintf(LuLogGetFile(), fmt __VA_OPT__(, ) __VA_ARGS__); \
 	}
 
 #define LogString(str) LogMessage("%s\n", str)
