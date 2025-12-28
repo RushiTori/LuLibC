@@ -81,7 +81,7 @@
 	}                                                                                                 \
                                                                                                       \
 	bool name##PushAll(name* arr, const type* data, size_t count) {                                   \
-		if ((arr->size + count) == arr->capacity) {                                                   \
+		if ((arr->size + count) >= arr->capacity) {                                                   \
 			if (!name##Grow(arr)) return false;                                                       \
 		}                                                                                             \
                                                                                                       \
@@ -111,7 +111,7 @@
 	bool name##InsertAll(name* arr, size_t index, const type* data, size_t count) {                   \
 		if (index == arr->size) return name##PushAll(arr, data, count);                               \
                                                                                                       \
-		if (arr->size == arr->capacity) {                                                             \
+		if ((arr->size + count) >= arr->capacity) {                                                   \
 			if (!name##Grow(arr)) return false;                                                       \
 		}                                                                                             \
                                                                                                       \
@@ -172,6 +172,8 @@
 			return true;                                                                              \
 		}                                                                                             \
                                                                                                       \
+		*arr = (name){0};                                                                             \
+                                                                                                      \
 		return false;                                                                                 \
 	}                                                                                                 \
                                                                                                       \
@@ -186,6 +188,8 @@
 			return true;                                                                              \
 		}                                                                                             \
                                                                                                       \
+		*arr = (name){0};                                                                             \
+                                                                                                      \
 		return false;                                                                                 \
 	}                                                                                                 \
                                                                                                       \
@@ -197,6 +201,8 @@
 			arr->capacity = newCapa;                                                                  \
 			return true;                                                                              \
 		}                                                                                             \
+                                                                                                      \
+		*arr = (name){0};                                                                             \
                                                                                                       \
 		return false;                                                                                 \
 	}                                                                                                 \
