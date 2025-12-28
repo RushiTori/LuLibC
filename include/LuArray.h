@@ -72,7 +72,7 @@
                                                                                                       \
 	bool name##Push(name* arr, type data) {                                                           \
 		if (arr->size == arr->capacity) {                                                             \
-			if (!name##Grow(arr)) return false;                                                       \
+			if (!name##Grow(arr, arr->size + 1)) return false;                                        \
 		}                                                                                             \
                                                                                                       \
 		arr->data[arr->size++] = data;                                                                \
@@ -82,7 +82,7 @@
                                                                                                       \
 	bool name##PushAll(name* arr, const type* data, size_t count) {                                   \
 		if ((arr->size + count) >= arr->capacity) {                                                   \
-			if (!name##Grow(arr)) return false;                                                       \
+			if (!name##Grow(arr, arr->size + count)) return false;                                    \
 		}                                                                                             \
                                                                                                       \
 		memcpy(arr->data + arr->size, data, count * sizeof(type));                                    \
@@ -95,7 +95,7 @@
 		if (index == arr->size) return name##Push(arr, data);                                         \
                                                                                                       \
 		if (arr->size == arr->capacity) {                                                             \
-			if (!name##Grow(arr)) return false;                                                       \
+			if (!name##Grow(arr, arr->size + 1)) return false;                                        \
 		}                                                                                             \
                                                                                                       \
 		type* dataIdx = arr->data + index;                                                            \
@@ -112,7 +112,7 @@
 		if (index == arr->size) return name##PushAll(arr, data, count);                               \
                                                                                                       \
 		if ((arr->size + count) >= arr->capacity) {                                                   \
-			if (!name##Grow(arr)) return false;                                                       \
+			if (!name##Grow(arr, arr->size + count)) return false;                                    \
 		}                                                                                             \
                                                                                                       \
 		type* dataIdx = arr->data + index;                                                            \
@@ -193,9 +193,10 @@
 		return false;                                                                                 \
 	}                                                                                                 \
                                                                                                       \
-	bool name##Grow(name* arr) {                                                                      \
+	bool name##Grow(name* arr, size_t minNewCapa) {                                                   \
 		size_t newCapa = arr->capacity * 2;                                                           \
-		if (!newCapa) newCapa = 8;                                                                    \
+		if (!arr->capacity) newCapa = 8;                                                              \
+		while (newCapa < minNewCapa) newCapa *= 2;                                                    \
                                                                                                       \
 		if (Realloc(arr->data, newCapa * sizeof(type))) {                                             \
 			arr->capacity = newCapa;                                                                  \
