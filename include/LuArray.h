@@ -32,7 +32,7 @@
                                                                                    \
 	bool name##ShrinkToFit(name* arr);                                             \
 	bool name##Reserve(name* arr, size_t capacity);                                \
-	bool name##Grow(name* container);                                              \
+	bool name##Grow(name* container, size_t minNewCapa);                           \
                                                                                    \
 	void name##Map(name* arr, void (*func)(type*));                                \
 	void name##Sort(name* arr, CompareFunc func);                                  \
